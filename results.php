@@ -196,8 +196,7 @@
 				$output .= '<img class="result-entry-cover" src="' . $value['img'] . '">';
 				$output .= '<h3><a href="' . $value['href'] . '" target="_blank">' . $key . '</a></h3>';
 				$output .= '<p class="result-console">' . $value['console'] . '</p>';
-				$output .= '<a href="' . $value['download'] . '">Download <i class="fa fa-download" aria-hidden="true"></i></a> &bull; <a href="' . $value['download'] . '">Install on Console <i class="fa fa-cloud-download" aria-hidden="true"></i></a>';
-				$output .= '</div>';
+				$output .= '<a href="' . $value['download'] . '">Download <i class="fa fa-download" aria-hidden="true"></i></a>';
 				echo $output;
 				$i = true;
 			}
