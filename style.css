@@ -1,0 +1,38 @@
+body {
+	padding-top: 50px;
+}
+
+.home-hero {
+	text-align: center;
+}
+
+.home-hero-image {
+	padding: 30px 30px 0px 30px;
+}
+
+.center {
+	text-align: center;
+}
+
+.home-advanced-search {
+	padding: 15px;
+}
+
+.result-entry {
+	min-height: 150px;
+}
+
+.result-console {
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+.result-entry-cover {
+	height: 130px;
+	width: auto;
+	float: right;
+}
+
+.search-again {
+	padding: 40px 0px 40px 0px;;
+}

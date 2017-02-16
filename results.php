@@ -72,8 +72,6 @@
 		
 		if (array_key_exists($console_raw, $valid_consoles)) {
 			$console = urlencode($_GET['console']);
-		} elseif ($_GET['console'] == 'PTC Sol 20' ){
-			$console = 'PTC Sol 20 ';
 		} else {
 			invalid();
 		}
@@ -139,14 +137,12 @@
 	}
 	
 	function invalid() {
-		header('HTTP/1.0 404 not found');
-		exit;
+		echo 'Error';
 	}
 	
 	$html = file_get_html('https://www.loveroms.com/query.php?sEcho=5&iColumns=5&sColumns=%2C%2C%2C%2C&iDisplayStart=' . $start . '&iDisplayLength=' . $length . '&mDataProp_0=0&sSearch_0=&bRegex_0=false&bSearchable_0=true&bSortable_0=true&mDataProp_1=1&sSearch_1=' . $console . '&bRegex_1=false&bSearchable_1=true&bSortable_1=true&mDataProp_2=2&sSearch_2=' . $genre . '&bRegex_2=false&bSearchable_2=true&bSortable_2=true&mDataProp_3=3&sSearch_3=' . $region . '&bRegex_3=false&bSearchable_3=true&bSortable_3=true&mDataProp_4=4&sSearch_4=&bRegex_4=false&bSearchable_4=true&bSortable_4=true&sSearch=' . $query . '&bRegex=false&iSortCol_0=' . $sort . '&sSortDir_0=' . $direction . '&iSortingCols=1');
-	
 	$i = -1;
-	
+
 	foreach ($html->find('a') as $a) {
 		$i++;
 		$text = $a->plaintext;
@@ -160,13 +156,13 @@
 		$output[$name]['href'] = $href;
 		$output[$name]['console'] = $platform;
 		$html = file_get_html($href);
-		$el = $html->find("div > div > div > p > a[class=btn btn-success detail]",0);
 		$img = $html->find("img.rom-cover",0);
-		$download = $el->href;
 		$property = 'data-cfsrc';
 		$img_src = $img->$property;
+		$url_exploded = explode('/', $href);
+		$download = end($url_exploded);
 		if (isset($download)) {
-			$output[$name]['download'] = $download;
+			$output[$name]['download'] = 'https:///www.loveroms.com/downloader/rom/?id=' . $download;
 		} else {
 			$output[$name]['download'] = false;
 		}
@@ -176,9 +172,45 @@
 			$output[$name]['img'] = false;
 		}
 	}
-	
-	header('Content-Type: application/json');
-	
-	echo json_encode($output);
-	
 ?>
+<?php include('header.php'); ?>
+<div class="container">
+	<div class="center search-again">
+		<?php if($_GET['start'] != '0') : ?>
+		<a href="/<?php echo basename($_SERVER['REQUEST_URI']); ?>&start=<?php echo intval($_GET['start']) - 10; ?>" class="btn btn-default"><i class="fa fa-caret-left" aria-hidden="true"></i> Previous Page</a>
+		<?php endif; ?>
+		<a href="/" class="btn btn-default">Search Again <i class="fa fa-search" aria-hidden="true"></i></a>
+		<a href="/<?php echo basename($_SERVER['REQUEST_URI']); ?>&start=<?php echo intval($_GET['start']) + 10; ?>" class="btn btn-default">Next Page <i class="fa fa-caret-right" aria-hidden="true"></i></a>
+	</div>
+</div>
+<div class="container">
+	<div>
+		<?php
+			$i = false;
+			foreach($output as $key => $value) {
+				$output = '';
+				if ($i) {
+					$output .= '<hr>';
+				}
+				$output .= '<div class="result-entry">';
+				$output .= '<img class="result-entry-cover" src="' . $value['img'] . '">';
+				$output .= '<h3><a href="' . $value['href'] . '" target="_blank">' . $key . '</a></h3>';
+				$output .= '<p class="result-console">' . $value['console'] . '</p>';
+				$output .= '<a href="' . $value['download'] . '">Download <i class="fa fa-download" aria-hidden="true"></i></a> &bull; <a href="' . $value['download'] . '">Install on Console <i class="fa fa-cloud-download" aria-hidden="true"></i></a>';
+				$output .= '</div>';
+				echo $output;
+				$i = true;
+			}
+		?>
+	</div>
+</div><!-- /.container -->
+<div class="container">
+	<div class="center search-again">
+		<?php if($_GET['start'] != '0') : ?>
+		<a href="/<?php echo basename($_SERVER['REQUEST_URI']); ?>&start=<?php echo intval($_GET['start']) - 10; ?>" class="btn btn-default"><i class="fa fa-caret-left" aria-hidden="true"></i> Previous Page</a>
+		<?php endif; ?>
+		<a href="/" class="btn btn-default">Search Again <i class="fa fa-search" aria-hidden="true"></i></a>
+		<a href="/<?php echo basename($_SERVER['REQUEST_URI']); ?>&start=<?php echo intval($_GET['start']) + 10; ?>" class="btn btn-default">Next Page <i class="fa fa-caret-right" aria-hidden="true"></i></a>
+	</div>
+</div>
+<?php include('footer.php'); ?>
